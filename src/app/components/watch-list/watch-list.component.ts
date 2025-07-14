@@ -13,9 +13,10 @@ import { ErrorStateComponent } from '../../shared/components/error-state/error-s
   styleUrl: './watch-list.component.scss'
 })
 export class WatchListComponent {
-  movies: WritableSignal<Movie[]> = signal<Movie[]>([]);
-  loading: WritableSignal<boolean> = signal(true);
-  error: WritableSignal<string> = signal<string>("");
+  
+  public error: WritableSignal<string> = signal<string>("");
+  public movies: WritableSignal<Movie[]> = signal<Movie[]>([]);
+  public loading: WritableSignal<boolean> = signal(true);
 
   constructor(
     public watchlist: WatchlistService,
@@ -24,7 +25,20 @@ export class WatchListComponent {
     this.load();
   }
 
-  load() {
+  public goToDetails(id: number): void {
+    this.router.navigate(['/movie', id]);
+  }
+
+  public remove(movie: Movie): void {
+    this.watchlist.remove(movie);
+    this.load(); // reload after removing
+  }
+
+  public retryLoad(): void {
+    this.load();
+  }
+
+  private load(): void {
     this.loading.set(true);
     this.error.set("");
     try {
@@ -36,18 +50,5 @@ export class WatchListComponent {
     } finally {
       this.loading.set(false);
     }
-  }
-
-  remove(movie: Movie) {
-    this.watchlist.remove(movie);
-    this.load(); // reload after removing
-  }
-
-  goToDetails(id: number) {
-    this.router.navigate(['/movie', id]);
-  }
-
-  retryLoad() {
-    this.load();
   }
 }
