@@ -53,29 +53,33 @@ export class PersonDetailsComponent {
   }
 
   private loadPerson(id: number): void {
-    this.loading.set(true);
-    this.error.set("");
+  this.loading.set(true);
+  this.error.set("");
 
-    this.personService.getPersonDetails(id).subscribe({
-      next: (res: Person) => this.person.set(res),
-      error: err => {
-        console.error(err);
-        this.error.set('Failed to load person details.');
-      },
-      complete: () => this.loading.set(false)
-    });
+  this.personService.getPersonDetails(id).subscribe({
+    next: (res: Person) => {
+      this.person.set(res);
+      this.loading.set(false);
+    },
+    error: err => {
+      console.error(err);
+      this.error.set('Failed to load person details.');
+      this.loading.set(false);
+    }
+  });
 
-    this.personService.getPersonCredits(id).subscribe({
-      next: (res: PersonCredit) => this.knownFor.set(res.cast.slice(0, 12)),
-      error: () => this.error.set('Failed to load credits.')
-    });
-  
-    this.personService.getPersonSocials(id).subscribe({
-      next: (res: PersonSocials) => this.socials.set(res)
-    });
+  this.personService.getPersonCredits(id).subscribe({
+    next: (res: PersonCredit) => this.knownFor.set(res.cast.slice(0, 12)),
+    error: () => this.error.set('Failed to load credits.')
+  });
 
-    this.personService.getPersonImages(id).subscribe({
-      next: (res: PersonImage) => this.gallery.set(res.profiles || [])
-    });
-  }
+  this.personService.getPersonSocials(id).subscribe({
+    next: (res: PersonSocials) => this.socials.set(res)
+  });
+
+  this.personService.getPersonImages(id).subscribe({
+    next: (res: PersonImage) => this.gallery.set(res.profiles || [])
+  });
+}
+
 }
