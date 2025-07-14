@@ -1,13 +1,13 @@
 import { Component, HostListener, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { Movie } from '../../../shared/models/movie.model';
-import { WatchlistService } from '../../../shared/services/watch-list/watch-list.service';
 import { Genre, GenreNames } from '../../../shared/models/genre.enum';
+import { WatchlistService } from '../../../shared/services/watch-list/watch-list.service';
+import { MovieService } from '../../../shared/services/movie/movie.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
-import { MovieService } from '../../../shared/services/movie/movie.service';
 
 @Component({
   selector: 'app-movie',
@@ -17,16 +17,17 @@ import { MovieService } from '../../../shared/services/movie/movie.service';
   styleUrl: './movie.component.scss'
 })
 export class MovieComponent {
-  movies: WritableSignal<Movie[]> = signal<Movie[]>([]);
-  page: WritableSignal<number> = signal(1);
-  selectedGenre: WritableSignal<Genre | string> = signal<Genre | string>("");
-  bannerMovie: WritableSignal<Movie | null> = signal<Movie | null>(null);
-  loadingMore: WritableSignal<boolean> = signal(false);
-  isLoading: WritableSignal<boolean> = signal(false);
-  error: WritableSignal<string> = signal<string>("");
 
-  readonly Genre = Genre;
-  readonly GenreNames = GenreNames; 
+  public bannerMovie: WritableSignal<Movie | null> = signal<Movie | null>(null);
+  public error: WritableSignal<string> = signal<string>('');
+  public isLoading: WritableSignal<boolean> = signal(false);
+  public loadingMore: WritableSignal<boolean> = signal(false);
+  public movies: WritableSignal<Movie[]> = signal<Movie[]>([]);
+  public page: WritableSignal<number> = signal(1);
+  public selectedGenre: WritableSignal<Genre | ''> = signal<Genre | ''>('');
+
+  public readonly Genre = Genre;
+  public readonly GenreNames = GenreNames;
 
   constructor(
     public movieService: MovieService,
@@ -36,7 +37,32 @@ export class MovieComponent {
     this.loadMovies();
   }
 
-   selectGenre(genre: Genre) {
+  public getPosterUrl(path: string | undefined): string {
+    return path ? this.movieService.getPosterUrl(path) : '';
+  }
+
+  public getYear(date: string): string {
+    return date ? new Date(date).getFullYear().toString() : '';
+  }
+
+  public goToDetails(id: number): void {
+    this.router.navigate(['/movie', id]);
+  }
+
+  public loadMore(): void {
+    this.page.set(this.page() + 1);
+    this.loadingMore.set(true);
+    this.loadMovies();
+  }
+
+  public retryLoad(): void {
+    this.page.set(1);
+    this.movies.set([]);
+    this.bannerMovie.set(null);
+    this.loadMovies();
+  }
+
+  public selectGenre(genre: Genre): void {
     this.selectedGenre.set(genre);
     this.page.set(1);
     this.movies.set([]);
@@ -44,14 +70,14 @@ export class MovieComponent {
     this.loadMovies();
   }
 
-  loadMovies() {
-    if(!this.movies().length) {
+  private loadMovies(): void {
+    if (!this.movies().length) {
       this.isLoading.set(true);
     }
-    this.loadingMore.set(true);
-    this.error.set("");
 
-    const genreId: string | Genre = this.selectedGenre() || "";
+    this.error.set('');
+
+    const genreId: Genre | '' = this.selectedGenre() || '';
     this.movieService.discoverMovies(genreId, this.page()).subscribe({
       next: res => {
         const newMovies = [...this.movies(), ...res.results];
@@ -63,7 +89,7 @@ export class MovieComponent {
         }
       },
       error: err => {
-        console.error('Error fetching movies', err);
+        console.error('Error fetching movies:', err);
         this.error.set('Oops! Something went wrong. Please try again.');
       },
       complete: () => {
@@ -73,39 +99,15 @@ export class MovieComponent {
     });
   }
 
-  loadMore() {
-    this.page.set(this.page() + 1);
-    this.loadMovies();
-  }
-
-  getYear(date: string) {
-    return date ? new Date(date).getFullYear() : '';
-  }
-
-  goToDetails(id: number) {
-    this.router.navigate(['/movie', id]);
-  }
-
-  retryLoad() {
-    // Reset to page 1 for clean state, or keep current page if you want.
-    this.page.set(1);
-    this.movies.set([]);
-    this.bannerMovie.set(null);
-    this.loadMovies();
-  }
-
-  /** ✅ ✅ ✅ AUTO LOAD MORE when scroll hits bottom */
   @HostListener('window:scroll', [])
   onScroll(): void {
     const scrollY = window.scrollY;
     const viewportHeight = window.innerHeight;
     const fullHeight = document.documentElement.scrollHeight;
 
-    const buffer = 300; // px before bottom
-
+    const buffer = 300;
     if (!this.loadingMore() && scrollY + viewportHeight + buffer >= fullHeight) {
-      this.page.set(this.page() + 1);
-      this.loadMovies();
+      this.loadMore();
     }
   }
 }

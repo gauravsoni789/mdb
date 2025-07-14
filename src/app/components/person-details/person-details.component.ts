@@ -9,6 +9,7 @@ import { PersonService } from './services/person.service';
 
 import { CarouselModule } from 'primeng/carousel';
 import { MovieService } from '../../shared/services/movie/movie.service';
+import { Person, PersonCredit, PersonImage, PersonSocials } from './models/person.model';
 
 @Component({
   selector: 'app-person-details',
@@ -25,19 +26,13 @@ import { MovieService } from '../../shared/services/movie/movie.service';
   templateUrl: './person-details.component.html',
 })
 export class PersonDetailsComponent {
-  person: WritableSignal<any | null> = signal(null);
-  knownFor: WritableSignal<any[]> = signal([]);
-  gallery: WritableSignal<any[]> = signal([]);
-  loading: WritableSignal<boolean> = signal(true);
-  socials: WritableSignal<any> = signal<any>({});
-  showFullBio: WritableSignal<boolean> = signal(false);
-  error: WritableSignal<string> = signal<string>("");
-
-  responsiveOptions = [
-    { breakpoint: '1024px', numVisible: 5 },
-    { breakpoint: '768px', numVisible: 3 },
-    { breakpoint: '560px', numVisible: 1 }
-  ];
+  public error: WritableSignal<string> = signal<string>("");
+  public gallery: WritableSignal<any[]> = signal([]);
+  public knownFor: WritableSignal<any[]> = signal([]);
+  public loading: WritableSignal<boolean> = signal(true);
+  public person: WritableSignal<any | null> = signal(null);
+  public showFullBio: WritableSignal<boolean> = signal(false);
+  public socials: WritableSignal<any> = signal<any>({});
 
   constructor(
     private route: ActivatedRoute,
@@ -48,12 +43,21 @@ export class PersonDetailsComponent {
     this.loadPerson(id);
   }
 
-  loadPerson(id: number) {
+  public toggleBio(): void {
+    this.showFullBio.update(v => !v);
+  }
+
+  public retry(): void {
+    const id = this.route.snapshot.params['id'];
+    this.loadPerson(id);
+  }
+
+  private loadPerson(id: number): void {
     this.loading.set(true);
     this.error.set("");
 
     this.personService.getPersonDetails(id).subscribe({
-      next: res => this.person.set(res),
+      next: (res: Person) => this.person.set(res),
       error: err => {
         console.error(err);
         this.error.set('Failed to load person details.');
@@ -62,25 +66,16 @@ export class PersonDetailsComponent {
     });
 
     this.personService.getPersonCredits(id).subscribe({
-      next: res => this.knownFor.set(res.cast.slice(0, 12)),
+      next: (res: PersonCredit) => this.knownFor.set(res.cast.slice(0, 12)),
       error: () => this.error.set('Failed to load credits.')
     });
   
     this.personService.getPersonSocials(id).subscribe({
-      next: res => this.socials.set(res)
+      next: (res: PersonSocials) => this.socials.set(res)
     });
 
     this.personService.getPersonImages(id).subscribe({
-      next: res => this.gallery.set(res.profiles || [])
+      next: (res: PersonImage) => this.gallery.set(res.profiles || [])
     });
-  }
-
-  toggleBio() {
-    this.showFullBio.update(v => !v);
-  }
-
-  retry() {
-    const id = this.route.snapshot.params['id'];
-    this.loadPerson(id);
   }
 }

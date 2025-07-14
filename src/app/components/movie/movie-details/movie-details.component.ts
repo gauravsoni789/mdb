@@ -1,13 +1,15 @@
 import { Component, WritableSignal, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { WatchlistService } from '../../../shared/services/watch-list/watch-list.service';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
-import { Movie } from '../../../shared/models/movie.model';
+import { Movie, Cast } from '../../../shared/models/movie.model';
 import { MovieService } from '../../../shared/services/movie/movie.service';
 import { CarouselModule } from 'primeng/carousel';
+
+const YOUTUBE_EMBED_URL = 'https://www.youtube.com/embed/';
 
 @Component({
   standalone: true,
@@ -16,16 +18,16 @@ import { CarouselModule } from 'primeng/carousel';
   templateUrl: './movie-details.component.html',
 })
 export class MovieDetailsComponent {
-  movie: WritableSignal<Movie | null> = signal(null);
-  trailerUrl: WritableSignal<SafeResourceUrl | null> = signal(null);
-  cast: WritableSignal<any[]> = signal([]);
-  similar: WritableSignal<Movie[]> = signal([]);
-  loading: WritableSignal<boolean> = signal(true);
-  error: WritableSignal<string> = signal("");
+
+  public cast: WritableSignal<Cast[]> = signal([]);
+  public error: WritableSignal<string> = signal('');
+  public loading: WritableSignal<boolean> = signal(true);
+  public movie: WritableSignal<Movie | null> = signal(null);
+  public similar: WritableSignal<Movie[]> = signal([]);
+  public trailerUrl: WritableSignal<SafeResourceUrl | null> = signal(null);
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     public movieService: MovieService,
     public watchlist: WatchlistService,
     private sanitizer: DomSanitizer
@@ -41,43 +43,46 @@ export class MovieDetailsComponent {
     });
   }
 
-  loadMovie(id: number) {
+  public toggleWatchlist(movie: Movie): void {
+    this.watchlist.toggle(movie);
+  }
+
+  private loadMovie(id: number): void {
     this.loading.set(true);
-    this.error.set("");
+    this.error.set('');
+
+    let tasks = 0;
+    const done = () => {
+      tasks++;
+      if (tasks === 4) {
+        this.loading.set(false);
+      }
+    };
 
     this.movieService.getMovieDetails(id).subscribe({
       next: movie => this.movie.set(movie),
-      error: err => {
-        this.error.set('Failed to load movie.');
-      }
+      error: () => this.error.set('Failed to load movie details.'),
+      complete: done
     });
 
     this.movieService.getMovieVideos(id).subscribe({
       next: res => {
-        const trailer = res.results.find((v: any) => v.type === 'Trailer' && v.site === 'YouTube');
-        if (trailer) {
-          this.trailerUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(
-            `https://www.youtube.com/embed/${trailer.key}`
-          ));
-        } else {
-          this.trailerUrl.set(null);
-        }
-      }
+        const trailer = res.results.find(v => v.type === 'Trailer' && v.site === 'YouTube');
+        this.trailerUrl.set(trailer ? this.sanitizer.bypassSecurityTrustResourceUrl(
+          `${YOUTUBE_EMBED_URL}${trailer.key}`
+        ) : null);
+      },
+      complete: done
     });
 
     this.movieService.getMovieCredits(id).subscribe({
-      next: res => this.cast.set(res.cast.slice(0, 10))
+      next: res => this.cast.set(res.cast.slice(0, 10)),
+      complete: done
     });
 
     this.movieService.getSimilarMovies(id).subscribe({
-      next: res => this.similar.set(res.results.slice(0, 6))
+      next: res => this.similar.set(res.results.slice(0, 6)),
+      complete: done
     });
-
-    this.loading.set(false);
   }
-
-  toggleWatchlist(movie: Movie) {
-    this.watchlist.toggle(movie);
-  }
-
 }
