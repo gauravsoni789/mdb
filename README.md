@@ -1,63 +1,214 @@
-# Mdb
+# 📌 MDB: Movie Database
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.15.
+**What Should I Watch Tonight** – a Movie Discovery Web App that enables users to explore, search, and view details about movies using data from the [TMDB (The Movie Database) API](https://www.themoviedb.org/).
 
-## Development server
+---
 
-To start a local development server, run:
+## 🧩 Tech Stack
+
+* **Framework:** [Angular 19](https://angular.dev)
+* **Language:** TypeScript `>=5.5.0 <5.8.0`
+* **Node.js:** `^18.19.1 || ^20.11.1 || ^22.0.0`
+* **Package Manager:** npm `>= 9.3.1`
+
+---
+
+## 🚀 Live Demo
+
+**Hosted URL:** [https://mdb-mfop.vercel.app](https://mdb-mfop.vercel.app)
+
+---
+
+## 📂 Repository
+
+**GitHub Repo:** [https://github.com/gauravsoni789/mdb.git](https://github.com/gauravsoni789/mdb.git)
+
+---
+
+## ✅ Prerequisites
+
+Ensure you have the following installed:
+
+1. **Node.js (v18 or higher)**
+   👉 [Download Node.js](https://nodejs.org)
+
+2. **Angular CLI (v19)**
+   Install globally:
+
+   ```bash
+   npm install -g @angular/cli@19
+   ```
+
+3. **Git**
+   👉 [Download Git](https://git-scm.com/)
+
+---
+
+## 🏗️ Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/gauravsoni789/mdb.git
+   ```
+
+2. **Navigate to the project directory**
+
+   ```bash
+   cd mdb
+   ```
+
+3. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+---
+
+## 📦 Run the Application (Development)
+
+Start a local dev server:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+or
 
 ```bash
-ng generate component component-name
+npm run start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Open your browser at [http://localhost:4200](http://localhost:4200).
+The app will automatically reload if you change any source files.
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+## 🧪 Running Tests
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Run unit tests using [Karma](https://karma-runner.github.io):
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+or
 
-For end-to-end (e2e) testing, run:
+```bash
+npm run test
+```
+
+Run end-to-end tests (if configured):
 
 ```bash
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+> **Note:** Angular CLI does not come with an e2e framework by default. Configure one (e.g., Cypress, Playwright, or Protractor) as needed.
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 🏗️ Build for Production
 
+To build an optimized production bundle:
 
-## IMPORTANT LINKS
-https://medium.com/@daniel.codrea/setting-up-a-primeng-v19-and-tailwindcss-v4-project-f1b550c8e2d0
+```bash
+ng build --configuration production
+```
+
+or
+
+```bash
+npm run build
+```
+
+The compiled output will be in the `dist/` directory.
+
+---
+
+## ⚙️ Deployment
+
+Upload the `dist/` folder to your preferred hosting platform, e.g., Vercel, Firebase Hosting, Netlify, GitHub Pages, etc.
+
+---
+
+## 📌 Useful Commands
+
+| Command              | Description                  |
+| -------------------- | ---------------------------- |
+| `ng serve`           | Start local dev server       |
+| `ng build`           | Build the app                |
+| `ng test`            | Run unit tests               |
+| `ng lint`            | Lint the app                 |
+| `ng e2e`             | Run end-to-end tests         |
+| `ng generate`        | Generate new code scaffolds  |
+| `ng generate --help` | See all available schematics |
+
+---
+
+## 🛠️ Code Scaffolding
+
+To generate a new component:
+
+```bash
+ng generate component component-name
+```
+
+For a complete list of schematics:
+
+```bash
+ng generate --help
+```
+
+---
+
+## 📦 Building
+
+To build the project:
+
+```bash
+ng build
+```
+
+Production build artifacts will be stored in the `dist/` directory.
+
+---
+
+## ✅ Running Unit Tests
+
+Run unit tests with Karma:
+
+```bash
+ng test
+```
+
+---
+
+## ✅ Running End-to-End Tests
+
+Run e2e tests:
+
+```bash
+ng e2e
+```
+
+---
+
+## 📚 Additional Resources
+
+* [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli)
+
+---
+
+## 🔗 IMPORTANT LINKS
+
+**Reference Links:**
+
+* [Setting up PrimeNG v19 + TailwindCSS v4](https://medium.com/@daniel.codrea/setting-up-a-primeng-v19-and-tailwindcss-v4-project-f1b550c8e2d0)
+* [TMDB: Person External IDs](https://developer.themoviedb.org/reference/person-external-ids)
+* [TMDB: API Settings](https://www.themoviedb.org/settings/api)
+* [TMDB: Getting Started](https://developer.themoviedb.org/docs/getting-started)
+* [TMDB: Intro / Getting Started](https://developer.themoviedb.org/reference/intro/getting-started)
+
+---

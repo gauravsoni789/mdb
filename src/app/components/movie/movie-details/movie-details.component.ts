@@ -8,8 +8,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { Movie, Cast } from '../../../shared/models/movie.model';
 import { MovieService } from '../../../shared/services/movie/movie.service';
 import { CarouselModule } from 'primeng/carousel';
-
-const YOUTUBE_EMBED_URL = 'https://www.youtube.com/embed/';
+import { YOUTUBE_EMBED_URL } from '../../../shared/constants/api.constants';
 
 @Component({
   standalone: true,
