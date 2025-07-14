@@ -1,0 +1,7 @@
+@use "./variables" as *;
+
+.p-menubar {
+    background-color: $primary-color;
+    border-color: $primary-color;
+    border-radius: $none;
+}

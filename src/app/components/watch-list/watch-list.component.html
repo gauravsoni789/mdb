@@ -1,0 +1,41 @@
+<div class="p-6 max-w-6xl mx-auto">
+  <h1 class="text-3xl font-bold mb-4">🎬 My Watchlist</h1>
+
+  @if (loading()) {
+    <app-loading-state></app-loading-state>
+  } @else if (error()) {
+    <app-error-state [message]="error()" (retry)="retryLoad()"></app-error-state>
+  } @else if (!movies().length) {
+    <div class="text-center py-20">
+      <h2 class="text-xl font-semibold text-gray-600">Your watchlist is empty</h2>
+      <p class="text-gray-500">Add some movies to see them here!</p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      @for (movie of movies(); track movie.id) {
+        <div
+          class="bg-white rounded shadow overflow-hidden cursor-pointer relative hover:shadow-lg transition"
+          (click)="goToDetails(movie.id)">
+          @if(movie.poster_path) {
+            <img
+               class="w-full h-64 object-cover"
+               [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
+               alt="Poster">
+          }
+          <div class="p-4">
+            <h2 class="text-lg font-semibold">{{ movie.title }}</h2>
+            <p class="text-sm text-gray-500">{{ movie.release_date | date:'yyyy' }} • ⭐ {{ movie.vote_average | number:'1.2-2' }}/10</p>
+          </div>
+
+          <button 
+            class="absolute top-2 right-2 text-xl z-10 rounded-full bg-red-500/40 px-2 py-1 shadow-lg"
+            (click)="remove(movie); $event.stopPropagation()">
+            <span class="text-red-500">
+              <i class="pi pi-trash"></i>
+            </span>
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

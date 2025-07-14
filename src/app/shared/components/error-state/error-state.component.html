@@ -1,0 +1,14 @@
+<div class="flex flex-col items-center justify-center py-16 text-center">
+    <img src="images/error.png"
+        alt="Error"
+        class="w-48 mb-6 opacity-80">
+
+    <h2 class="text-2xl font-bold text-red-600 mb-2">Oops! Something went wrong.</h2>
+    <p class="mb-6 text-gray-600">{{ message }}</p>
+
+    <button
+    (click)="retry.emit()"
+    class="px-5 py-3 bg-red-600 hover:bg-red-700 text-white rounded shadow transition">
+    Retry
+    </button>
+</div>

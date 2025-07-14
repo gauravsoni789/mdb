@@ -1,0 +1,32 @@
+<div class="w-full">
+  <p-autoComplete 
+    class="w-full"
+    [(ngModel)]="query"
+    [suggestions]="filteredResults()"
+    (completeMethod)="search($event)"
+    (onSelect)="selectItem($event)"
+    [virtualScroll]="true"
+    [virtualScrollItemSize]="50"
+    [group]="true"
+    [scrollHeight]="'300px'"
+    field="name"
+    placeholder="Search movies or people..."
+  >
+    <ng-template let-item pTemplate="item">
+      <div class="flex items-center gap-4 p-2">
+        <img *ngIf="item.poster_path || item.profile_path"
+          [src]="'https://image.tmdb.org/t/p/w92' + (item.poster_path || item.profile_path)"
+          class="w-12 h-16 rounded object-cover"
+          alt="Poster" />
+        <div>
+          <p class="font-semibold">
+            {{ item.title || item.name }}
+          </p>
+          <p class="text-xs text-gray-500">
+            {{ item.media_type | uppercase}}
+          </p>
+        </div>
+      </div>
+    </ng-template>
+  </p-autoComplete>
+</div>

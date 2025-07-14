@@ -1,0 +1,100 @@
+  @if (loading()) {
+    <app-loading-state></app-loading-state>
+  } @else if (error()) {
+    <app-error-state [message]="error()"></app-error-state>
+  } @else if (movie()) {
+
+<div class="relative w-full">
+  <img
+    class="w-full h-[400px] md:h-[500px] object-cover"
+    [src]="movieService.getBackdropUrl(movie()!.backdrop_path || movie()!.poster_path)"
+    alt="{{ movie()!.title }}">
+
+  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent flex flex-col justify-end p-8">
+    <h1 class="text-4xl md:text-5xl text-white font-bold mb-2">{{ movie()!.title }}</h1>
+    <p class="text-gray-300 mb-4">{{ movie()!.release_date | date }} &bull; ⭐ {{ movie()!.vote_average | number:'1.2-2'}}/10</p>
+    <p class="text-gray-200 max-w-3xl mb-6">{{ movie()!.overview }}</p>
+
+    <button
+      class="max-w-xs gap-2 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded"
+      (click)="toggleWatchlist(movie()!)">
+      <i class="pi"
+         [ngClass]="{
+           'pi-bookmark-fill': watchlist.isInWatchlist(movie()!),
+           'pi-bookmark': !watchlist.isInWatchlist(movie()!)
+         }"></i>
+      <span>
+        {{ watchlist.isInWatchlist(movie()!) ? 'Remove from Watchlist' : 'Add to Watchlist' }}
+      </span>
+    </button>
+  </div>
+</div>
+
+<div class="relative w-full bg-gray-600 py-2">
+    <div class="mb-12 max-w-6xl  mx-auto">
+      <h2 class="text-2xl font-bold mb-4 mt-2 text-white">Trailer</h2>
+      @if (trailerUrl()) {
+        <div class="aspect-w-16 aspect-h-9">
+          <iframe
+            class="w-full h-80 rounded shadow"
+            [src]="trailerUrl()"
+            frameborder="0"
+            allowfullscreen>
+          </iframe>
+        </div>
+      } @else {
+        <p class="text-gray-500">No trailer available for this movie.</p>
+      }
+    </div>
+
+    </div>
+<div class="p-6 max-w-6xl mx-auto">
+
+    <div class="mb-12">
+      <h2 class="text-2xl font-bold mb-4">Top Cast</h2>
+      @if (cast().length) {
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+          @for (actor of cast(); track actor.id) {
+            <div
+              class="text-center cursor-pointer group"
+              [routerLink]="['/person', actor.id]">
+              <img
+                class="w-full h-48 object-cover rounded shadow group-hover:shadow-lg"
+                [src]="movieService.getProfileUrl(actor.profile_path)"
+                alt="{{ actor.name }}">
+              <p class="mt-2 font-semibold">{{ actor.name }}</p>
+              <p class="text-gray-500 text-sm">{{ actor.character }}</p>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-gray-500">Cast information is not available.</p>
+      }
+    </div>
+
+    <div>
+      <h2 class="text-2xl font-bold mb-4">You Might Also Like</h2>
+      @if (similar().length) {
+        <p-carousel [value]="similar()" [numVisible]="3" [numScroll]="3" [circular]="false">
+        <ng-template pTemplate="item" let-sim>
+          <div [routerLink]="['/movie', sim.id]" class="w-80 border border-surface shadow hover:shadow-lg cursor-pointer overflow-hidden m-2 p-4 mx-auto">
+            <img
+              class="w-full h-64 object-cover"
+              [src]="movieService.getPosterUrl(sim.poster_path)"
+              alt="{{ sim.title }}">
+            <div class="p-4">
+              <h3 class="text-lg font-semibold">{{ sim.title }}</h3>
+              <p class="text-gray-500 text-sm">
+                {{ sim.release_date | date:'yyyy' }} &bull; ⭐ {{ sim!.vote_average | number:'1.2-2'}}/10
+              </p>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+      } @else {
+        <p class="text-gray-500">No similar movies found.</p>
+      }
+    </div>
+</div>
+
+  }

@@ -1,1 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
+@use "primeicons/primeicons.css";
+@use "./styles/variables" as *;
+@use "./styles/theme" as *;
+
+@plugin 'tailwindcss-primeui';
+@layer tailwind, primeng;
+
+@layer tailwind {
+  @import "tailwindcss";
+}

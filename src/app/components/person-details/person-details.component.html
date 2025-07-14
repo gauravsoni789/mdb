@@ -1,0 +1,164 @@
+
+<app-loading-state *ngIf="loading()"></app-loading-state>
+<app-error-state *ngIf="error()" [message]="error()" (retry)="retry()"></app-error-state>
+
+@if (!loading() && !error()) {
+  @if (person()) {
+  
+      <div class="p-8 max-w-8xl mx-auto bg-gray-600">
+       <div class="flex flex-col md:flex-row gap-8 items-start">
+      <img 
+        [src]="'https://image.tmdb.org/t/p/w500' + person().profile_path" 
+        alt="{{ person().name }}" 
+        class="w-80 h-auto rounded-xl shadow-lg"
+      />
+
+      <div class="flex-1">
+        <h1 class="text-4xl font-bold mb-2 text-gray-100 dark:text-white">
+          {{ person().name }}
+        </h1>
+        <p class="text-gray-300 dark:text-gray-300 mb-4">
+          {{ person().known_for_department }}
+        </p>
+
+        <div class="flex flex-wrap gap-4 mb-4">
+          <p-chip label="Born: {{ person().birthday || 'N/A' }}"></p-chip>
+          @if (person().deathday) {
+            <p-chip label="Died: {{ person().deathday }}"></p-chip>
+          }
+          <p-chip label="Place: {{ person().place_of_birth || 'N/A' }}"></p-chip>
+          <p-chip label="Gender: {{ person().gender === 2 ? 'Male' : 'Female' }}"></p-chip>
+        </div>
+        @if(person().biography) {
+          <div class="mb-4 text-gray-200 dark:text-gray-200">
+            <p>
+              @if (showFullBio()) {
+                {{ person().biography }}
+              } @else {
+                {{ person().biography | slice:0:300 }}...
+              }
+              @if (!showFullBio()) {
+                <button (click)="toggleBio()" class="text-blue-600 dark:text-blue-400 underline mt-2 ">
+                  Read More
+                </button>
+              }
+            </p>
+          </div>
+        }
+
+        @if(person().length) {
+           <div class="mt-6">
+          <h2 class="text-xl font-semibold mb-2 text-gray-200 dark:text-white">
+            Also Known As
+          </h2>
+          <div class="flex flex-wrap gap-2">
+            @for (name of person().also_known_as; track name) {
+              <p-chip [label]="name"></p-chip>
+            }
+          </div>
+        </div>
+        }
+
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          @if (socials().imdb_id) {
+            <a [href]="'https://www.imdb.com/name/' + socials().imdb_id" target="_blank"
+              class="flex items-center gap-2 px-4 py-2 rounded-md bg-yellow-500 text-white hover:bg-yellow-600">
+              <i class="pi pi-video"></i> IMDb
+            </a>
+          }
+
+          @if (socials().facebook_id) {
+            <a [href]="'https://www.facebook.com/' + socials().facebook_id" target="_blank"
+              class="flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">
+              <i class="pi pi-facebook"></i> Facebook
+            </a>
+          }
+
+          @if (socials().instagram_id) {
+            <a [href]="'https://www.instagram.com/' + socials().instagram_id" target="_blank"
+              class="flex items-center gap-2 px-4 py-2 rounded-md bg-pink-600 text-white hover:bg-pink-700">
+              <i class="pi pi-instagram"></i> Instagram
+            </a>
+          }
+
+          @if (socials().twitter_id) {
+            <a [href]="'https://twitter.com/' + socials().twitter_id" target="_blank"
+              class="flex items-center gap-2 px-4 py-2 rounded-md bg-sky-500 text-white hover:bg-sky-600">
+              <i class="pi pi-twitter"></i> Twitter
+            </a>
+          }
+
+          @if (socials().wikidata_id) {
+            <a [href]="'https://www.wikidata.org/wiki/' + socials().wikidata_id" target="_blank"
+              class="flex items-center gap-2 px-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700">
+              <i class="pi pi-info-circle"></i> Wikidata
+            </a>
+          }
+
+          @if (socials().youtube_id) {
+            <a [href]="'https://www.youtube.com/' + socials().youtube_id" target="_blank"
+              class="flex items-center gap-2 px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700">
+              <i class="pi pi-youtube"></i> YouTube
+            </a>
+          }
+
+          @if (person().homepage) {
+            <a [href]="person().homepage" target="_blank"
+              class="flex items-center gap-2 px-4 py-2 rounded-md bg-gray-600 text-white hover:bg-gray-700">
+              <i class="pi pi-link"></i> Homepage
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+    </div>
+  <div class="p-8 max-w-6xl mx-auto">
+     
+    <div class="mb-12">
+      <h2 class="text-2xl font-bold mb-4">Known For</h2>
+      @if (knownFor().length) {
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          @for (movie of knownFor(); track movie.id) {
+            <div
+              class="bg-white rounded shadow hover:shadow-lg cursor-pointer overflow-hidden"
+              [routerLink]="['/movie', movie.id]">
+              <img
+                [src]="movieService.getPosterUrl(movie.poster_path)"
+                alt="{{ movie.title }}"
+                class="w-full h-64 object-cover">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold">{{ movie.title }}</h3>
+                <p class="text-gray-500 text-sm">{{ movie.release_date | date:'yyyy' }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-gray-500">No known credits found.</p>
+      }
+    </div>
+
+
+    @if (gallery().length) {
+  <div class="mt-12">
+    <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Gallery</h2>
+   
+
+      <p-carousel [value]="gallery()" [numVisible]="3" [numScroll]="3" [circular]="false">
+        <ng-template pTemplate="item" let-item>
+            <div class="w-80 border border-surface rounded-border m-2 p-4 mx-auto">
+                <div class="mb-4">
+                    <div class="relative mx-auto">
+                        <img [src]="'https://image.tmdb.org/t/p/original' + item.file_path" class="w-full object-cover rounded" />
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+      </p-carousel>
+  </div>
+}
+</div>
+  } @else {
+    <app-no-data message="No person details found."></app-no-data>
+  }
+}

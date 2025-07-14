@@ -1,0 +1,21 @@
+<p-menubar>
+    <ng-template #start>
+        <a routerLink="/">
+            <img src="images/logo.png" class="h-15" alt="MOVIE DATABASE">
+        </a>
+    </ng-template>
+   
+    <ng-template #end>
+        <div class="flex items-center gap-2 mr-5">
+            <a routerLink="/watchlist" alt="Watchlist" class="mr-3 bg-white/40 px-2 py-1 text-white rounded-full shadow-xl">
+                <i class="pi pi-bookmark"></i>
+            </a>
+            <a (click)="op.toggle($event)" alt="Search Movie or Person" class="bg-white/40 px-2 py-1 text-white rounded-full shadow-xl">
+                <i class="pi pi-search"></i>
+            </a>
+            <p-popover #op >
+                <app-search (toggleEvent)="op.hide()"></app-search>
+            </p-popover>
+        </div>
+    </ng-template>
+</p-menubar>
