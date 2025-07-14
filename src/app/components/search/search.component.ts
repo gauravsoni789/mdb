@@ -16,7 +16,7 @@ import { GroupedSearchResult, SearchResultItem } from './models/search-result.mo
   templateUrl: './search.component.html',
 })
 export class SearchComponent {
-  @Output() toggleEvent: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+  @Output() private toggleEvent: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
   public error: WritableSignal<string> = signal<string>('');
   public filteredResults: WritableSignal<GroupedSearchResult[]> = signal<GroupedSearchResult[]>([]);

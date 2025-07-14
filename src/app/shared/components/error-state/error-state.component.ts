@@ -7,6 +7,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './error-state.component.scss'
 })
 export class ErrorStateComponent {
-  @Input() message: string = 'Something went wrong.';
-  @Output() retry: EventEmitter<void>  = new EventEmitter<void>();
+  @Input() public message: string = 'Something went wrong.';
+  @Output() public retry: EventEmitter<void>  = new EventEmitter<void>();
 }

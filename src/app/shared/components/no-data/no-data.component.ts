@@ -7,5 +7,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './no-data.component.scss'
 })
 export class NoDataComponent {
-   @Input() message: string = 'No data found.';
+  @Input() public message: string = 'No data found.';
 }
