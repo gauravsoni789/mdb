@@ -212,3 +212,10 @@ ng e2e
 * [TMDB: Intro / Getting Started](https://developer.themoviedb.org/reference/intro/getting-started)
 
 ---
+
+## 📌 Important Documentation Path (inside the repo):
+
+coverage/mdb
+coverage/Code-coverage-report-for-All-files-07-14-2025_10_41_PM.pdf
+coverage/Deploy Angular to Vercel - Web App Guide.pdf
+coverage/TMDB API Configuration Guide.pdf
