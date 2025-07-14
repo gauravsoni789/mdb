@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, WritableSignal, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {  AutoCompleteModule } from 'primeng/autocomplete';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
 import { SearchService } from './services/search.service';
 import { PopoverModule } from 'primeng/popover';
+import { GroupedSearchResult, SearchResultItem } from './models/search-result.model';
 
 @Component({
   selector: 'app-search',
@@ -15,12 +16,12 @@ import { PopoverModule } from 'primeng/popover';
   templateUrl: './search.component.html',
 })
 export class SearchComponent {
-  @Output() toggleEvent: EventEmitter<boolean>  = new EventEmitter<boolean>(false);
+  @Output() toggleEvent: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
-  query = signal<string>('');
-  filteredResults = signal<any[]>([]);
-  loading = signal<boolean>(false);
-  error = signal<string>("");
+  public error: WritableSignal<string> = signal<string>('');
+  public filteredResults: WritableSignal<GroupedSearchResult[]> = signal<GroupedSearchResult[]>([]);
+  public loading: WritableSignal<boolean> = signal<boolean>(false);
+  public query: WritableSignal<string> = signal<string>('');
 
   private searchInput$ = new Subject<string>();
 
@@ -35,33 +36,29 @@ export class SearchComponent {
             return of([]);
           }
           this.loading.set(true);
-          this.error.set("");
+          this.error.set('');
           return this.searchService.searchAll(term);
         })
       )
       .subscribe({
-        next: res => {
-
-          const movieData = {
+        next: (res: SearchResultItem[]) => {
+          const movieData: GroupedSearchResult = {
             label: 'MOVIE',
             value: 'movie',
-            items: res.filter((item: any) => (item.media_type === "movie"))
-          }
-          const personData = {
+            items: res.filter(item => item.media_type === 'movie'),
+          };
+
+          const personData: GroupedSearchResult = {
             label: 'PERSON',
             value: 'person',
-            items: res.filter((item: any) => (item.media_type === "person"))
+            items: res.filter(item => item.media_type === 'person'),
           };
-          const groupData = [];
-          if(movieData.items.length) {
-            groupData.push(movieData)
-          }
-          if(personData.items.length) {
-            groupData.push(personData)
-          }
 
-         console.log(groupData);
-          this.filteredResults.set(groupData)
+          const groupData: GroupedSearchResult[] = [];
+          if (movieData.items.length) groupData.push(movieData);
+          if (personData.items.length) groupData.push(personData);
+
+          this.filteredResults.set(groupData);
         },
         error: err => {
           console.error(err);
@@ -71,11 +68,11 @@ export class SearchComponent {
       });
   }
 
-  search(event: any) {
+  public search(event: { query: string }): void {
     this.searchInput$.next(event.query);
   }
 
-  selectItem(item: any) {
+  public selectItem(item: { value: SearchResultItem }): void {
     this.toggleEvent.emit(true);
 
     if (item.value.media_type === 'movie') {
@@ -84,10 +81,10 @@ export class SearchComponent {
       this.router.navigate(['/person', item.value.id]);
     }
 
-    this.query.set("");
+    this.query.set('');
   }
 
-  retry() {
+  public retry(): void {
     this.searchInput$.next(this.query());
   }
 }

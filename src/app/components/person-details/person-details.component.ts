@@ -6,9 +6,9 @@ import { LoadingStateComponent } from '../../shared/components/loading-state/loa
 import { ErrorStateComponent } from '../../shared/components/error-state/error-state.component';
 import { NoDataComponent } from '../../shared/components/no-data/no-data.component';
 import { PersonService } from './services/person.service';
-import { MovieService } from '../../shared/models/services/movie.service';
 
 import { CarouselModule } from 'primeng/carousel';
+import { MovieService } from '../../shared/services/movie/movie.service';
 
 @Component({
   selector: 'app-person-details',

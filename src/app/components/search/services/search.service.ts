@@ -1,16 +1,19 @@
+// search.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { of, switchMap } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
+import { API_BASE_URL } from '../../../shared/constants/api.constants';
+import { SearchResultItem } from '../models/search-result.model';
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
-  private baseUrl = 'https://api.themoviedb.org/3/search/multi';
+  private baseUrl = `${API_BASE_URL}/search/multi`;
 
   constructor(private http: HttpClient) {}
 
-  searchAll(query: string) {
+  public searchAll(query: string): Observable<SearchResultItem[]> {
     const params = new HttpParams().set('query', query);
-    return this.http.get<any>(this.baseUrl, { params }).pipe(
+    return this.http.get<{ results: SearchResultItem[] }>(this.baseUrl, { params }).pipe(
       switchMap(res => of(res.results || []))
     );
   }

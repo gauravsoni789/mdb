@@ -7,7 +7,7 @@ import { WatchlistService } from '../../../shared/services/watch-list/watch-list
 import { Genre, GenreNames } from '../../../shared/models/genre.enum';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
-import { MovieService } from '../../../shared/models/services/movie.service';
+import { MovieService } from '../../../shared/services/movie/movie.service';
 
 @Component({
   selector: 'app-movie',

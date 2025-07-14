@@ -29,4 +29,24 @@ export class MovieService {
   public getPosterUrl(path: string) {
     return `${IMAGE_BASE_URL}${path}`;
   }
+
+  getMovieVideos(id: number) {
+    return this.http.get<any>(`${this.baseUrl}/movie/${id}/videos`);
+  }
+
+  getMovieCredits(id: number) {
+    return this.http.get<any>(`${this.baseUrl}/movie/${id}/credits`);
+  }
+
+  getSimilarMovies(id: number) {
+    return this.http.get<any>(`${this.baseUrl}/movie/${id}/similar`);
+  }
+
+  getProfileUrl(path: string) {
+    return path ? `${IMAGE_BASE_URL}${path}` : '';
+  }
+
+  getBackdropUrl(path: string) {
+    return path ? `https://image.tmdb.org/t/p/original${path}` : "";
+  }
 }

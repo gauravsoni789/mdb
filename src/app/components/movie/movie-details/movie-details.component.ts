@@ -6,7 +6,7 @@ import { WatchlistService } from '../../../shared/services/watch-list/watch-list
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { Movie } from '../../../shared/models/movie.model';
-import { MovieService } from '../../../shared/models/services/movie.service';
+import { MovieService } from '../../../shared/services/movie/movie.service';
 import { CarouselModule } from 'primeng/carousel';
 
 @Component({
