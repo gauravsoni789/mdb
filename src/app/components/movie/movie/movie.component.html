@@ -1,102 +1,129 @@
-@if(error()) {
+@if (error()) {
   <app-error-state
     [message]="error()"
     (retry)="retryLoad()"
-  ></app-error-state> 
+  ></app-error-state>
 } @else if (isLoading()) {
   <app-loading-state></app-loading-state>
 } @else {
- @if(bannerMovie()) {
-  <div class="relative overflow-hidden shadow-lg">
-    <img class="w-full h-50 object-cover" [src]="getPosterUrl(bannerMovie()?.poster_path)" alt="Banner">
-    <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-6">
-      <h1 class="text-3xl text-white font-bold">{{ bannerMovie()!.title }}</h1>
-      <p class="text-white">{{ bannerMovie()!.overview | slice:0:150 }}...</p>
-    </div>
-  </div>
-}
-
-<div class="p-6 max-w-6xl mx-auto">
-  <div class="flex gap-4 mb-6">
-    <button 
-      class="px-4 py-2 rounded"
-      [ngClass]="{
-        'bg-blue-600 text-white': selectedGenre() === Genre.COMEDY,
-        'bg-gray-200 text-gray-700': selectedGenre() !== Genre.COMEDY
-      }"
-      (click)="selectGenre(Genre.COMEDY)">
-      Feel Good
-    </button>
-
-    <button 
-      class="px-4 py-2 rounded"
-      [ngClass]="{
-        'bg-blue-600 text-white': selectedGenre() === Genre.ACTION,
-        'bg-gray-200 text-gray-700': selectedGenre() !== Genre.ACTION
-      }"
-      (click)="selectGenre(Genre.ACTION)">
-      Action Fix
-    </button>
-
-    <button 
-      class="px-4 py-2 rounded"
-      [ngClass]="{
-        'bg-blue-600 text-white': selectedGenre() === Genre.MYSTERY,
-        'bg-gray-200 text-gray-700': selectedGenre() !== Genre.MYSTERY
-      }"
-      (click)="selectGenre(Genre.MYSTERY)">
-      Mind Benders
-    </button>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    @for(movie of movies(); track movie) {
-    <div 
-         class="border dark:border-gray-500 border-gray-200  rounded shadow overflow-hidden cursor-pointer relative hover:shadow-lg transition"
-         (click)="goToDetails(movie.id)">
-         @if(movie.poster_path) {
-          <img 
-           class="w-full h-64 object-cover"
-           [src]="movieService.getPosterUrl(movie.poster_path)"
-           alt="Poster">
-         }
-      
-
-      <div class="p-4">
-        <h2 class="text-lg font-semibold">{{ movie.title }}</h2>
-        <p class="text-sm text-gray-500">{{ getYear(movie.release_date) }} • ⭐ {{ movie.vote_average | number:'1.2-2' }}/10</p>
+  @if (bannerMovie()) {
+    <div class="relative overflow-hidden shadow-lg">
+      <img
+        class="w-full h-50 object-cover"
+        [src]="getPosterUrl(bannerMovie()?.poster_path)"
+        alt="Banner"
+      />
+      <div class="absolute inset-0 bg-black/60 flex flex-col justify-end p-6">
+        <h1 class="text-3xl text-white font-bold">
+          {{ bannerMovie()!.title }}
+        </h1>
+        <p class="text-white">
+          {{ bannerMovie()!.overview | slice: 0:150 }}...
+        </p>
       </div>
-
-      <button 
-        class="absolute top-2 right-2 text-xl z-10 bg-white/80 px-2 py-1 rounded-full shadow-xl"
-        (click)="watchlist.toggle(movie); $event.stopPropagation()">
-        <span [ngClass]="{'text-yellow-500': watchlist.isInWatchlist(movie)}">
-          <i class="pi" [ngClass]="{
-            'pi-bookmark-fill': watchlist.isInWatchlist(movie),
-            'pi-bookmark': !watchlist.isInWatchlist(movie)
-          }"></i>
-        </span>
-      </button>
     </div>
   }
+
+  <div class="p-6 max-w-6xl mx-auto">
+    <div class="flex gap-4 mb-6">
+      <button
+        class="px-4 py-2 rounded"
+        [ngClass]="{
+          'bg-blue-600 text-white': selectedGenre() === Genre.COMEDY,
+          'bg-gray-200 text-gray-700': selectedGenre() !== Genre.COMEDY
+        }"
+        (click)="selectGenre(Genre.COMEDY)"
+      >
+        Feel Good
+      </button>
+
+      <button
+        class="px-4 py-2 rounded"
+        [ngClass]="{
+          'bg-blue-600 text-white': selectedGenre() === Genre.ACTION,
+          'bg-gray-200 text-gray-700': selectedGenre() !== Genre.ACTION
+        }"
+        (click)="selectGenre(Genre.ACTION)"
+      >
+        Action Fix
+      </button>
+
+      <button
+        class="px-4 py-2 rounded"
+        [ngClass]="{
+          'bg-blue-600 text-white': selectedGenre() === Genre.MYSTERY,
+          'bg-gray-200 text-gray-700': selectedGenre() !== Genre.MYSTERY
+        }"
+        (click)="selectGenre(Genre.MYSTERY)"
+      >
+        Mind Benders
+      </button>
+    </div>
+
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+    >
+      @for (movie of movies(); track movie.id) {
+        <div
+          class="border border-gray-200 dark:border-gray-500 rounded shadow overflow-hidden cursor-pointer relative hover:shadow-lg transition"
+          (click)="goToDetails(movie.id)"
+        >
+          @if (movie.poster_path) {
+            <img
+              class="w-full h-64 object-cover"
+              [src]="getPosterUrl(movie.poster_path)"
+              alt="Poster"
+            />
+          }
+
+          <div class="p-4">
+            <h2 class="text-lg font-semibold">{{ movie.title }}</h2>
+            <p class="text-sm text-gray-500">
+              {{ getYear(movie.release_date) }} • ⭐
+              {{
+                movie.vote_average | number: '1.2-2'
+              }}/10
+            </p>
+          </div>
+
+          <button
+            class="absolute top-2 right-2 text-xl z-10 bg-white/80 px-2 py-1 rounded-full shadow-xl"
+            (click)="watchlist.toggle(movie); $event.stopPropagation()"
+          >
+            <span
+              [ngClass]="{
+                'text-yellow-500': watchlist.isInWatchlist(movie)
+              }"
+            >
+              <i
+                class="pi"
+                [ngClass]="{
+                  'pi-bookmark-fill': watchlist.isInWatchlist(movie),
+                  'pi-bookmark': !watchlist.isInWatchlist(movie)
+                }"
+              ></i>
+            </span>
+          </button>
+        </div>
+      }
+    </div>
+
+    @if (!isLoading() && !movies().length && !error()) {
+      <div class="text-center text-gray-500 py-16">
+        <p>No movies found for this category.</p>
+      </div>
+    }
+
+    @if (movies().length) {
+      <div class="flex justify-center mt-6">
+        <button
+          class="px-6 py-3 w-full bg-blue-600 text-white rounded shadow hover:bg-blue-700 disabled:bg-blue-600/50"
+          [disabled]="loadingMore()"
+          (click)="loadMore()"
+        >
+          {{ loadingMore() ? 'Loading...' : 'Load More' }}
+        </button>
+      </div>
+    }
   </div>
-
-  @if(!isLoading() && !movies().length && !error()) {
-    <div class="text-center text-gray-500 py-16">
-      <p>No movies found for this category.</p>
-    </div>
-  }
-
-  @if(movies().length) {
-    <div class="flex justify-center mt-6">
-      <button 
-        class="px-6 py-3 w-full bg-blue-600 text-white rounded shadow hover:bg-blue-700 disabled:bg-blue-600/50"
-        [disabled]="loadingMore()"
-        (click)="loadMore()">
-        {{ loadingMore() ? 'Loading...' : 'Load More' }}
-      </button>
-    </div>
-  }
-
-</div>
 }
