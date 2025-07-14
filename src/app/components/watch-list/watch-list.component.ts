@@ -31,7 +31,7 @@ export class WatchListComponent {
 
   public remove(movie: Movie): void {
     this.watchlist.remove(movie);
-    this.load(); // reload after removing
+    this.load();
   }
 
   public retryLoad(): void {

@@ -39,13 +39,12 @@ describe('SearchComponent', () => {
 
     mockSearchService.searchAll.and.returnValue(of(mockResults));
 
-    // trigger search
     component.search({ query: 'test' });
-    tick(300); // debounceTime
+    tick(300);
 
     expect(mockSearchService.searchAll).toHaveBeenCalledWith('test');
 
-    tick(); // complete observable
+    tick(); 
 
     const grouped = component.filteredResults();
     expect(grouped.length).toBe(2);

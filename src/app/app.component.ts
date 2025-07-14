@@ -7,6 +7,5 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'mdb';
+export class AppComponent {;
 }
