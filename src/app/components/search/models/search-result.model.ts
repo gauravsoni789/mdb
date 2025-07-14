@@ -1,5 +1,5 @@
 export interface SearchResultMovie {
-  media_type: 'movie';
+  media_type: string;
   id: number;
   title: string;
   poster_path?: string;
@@ -8,7 +8,7 @@ export interface SearchResultMovie {
 }
 
 export interface SearchResultPerson {
-  media_type: 'person';
+  media_type: string;
   id: number;
   name: string;
   profile_path?: string;
